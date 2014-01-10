@@ -39,7 +39,7 @@ func ListenHTTP() (*client.Tunnel, error) {
 		return nil, err
 	}
 
-	return c.BindHTTP(new(proto.HTTPOptions), nil)
+	return c.ListenHTTP(new(proto.HTTPOptions), nil)
 }
 
 // ListenHTTPS begins listening for HTTPS connections on a randomly-assigned
@@ -51,7 +51,7 @@ func ListenHTTPS() (*client.Tunnel, error) {
 		return nil, err
 	}
 
-	return c.BindHTTPS(new(proto.HTTPOptions), nil)
+	return c.ListenHTTPS(new(proto.HTTPOptions), nil)
 }
 */
 
@@ -63,5 +63,5 @@ func ListenTCP() (*client.Tunnel, error) {
 		return nil, err
 	}
 
-	return c.BindTCP(new(proto.TCPOptions), nil)
+	return c.ListenTCP(new(proto.TCPOptions), nil)
 }
