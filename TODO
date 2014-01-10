@@ -1,0 +1,7 @@
+expose when connection is up/down from client side
+
+Test cases!
+Improve logging
+Improve error handling:
+- decide when to wrap errors, when to retry and when to fail permanently
+add travis builds
