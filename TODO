@@ -1,3 +1,4 @@
+remove read/write netstring message stuff in favor of using stream types via muxado
 expose when connection is up/down from client side
 
 Test cases!

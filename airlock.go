@@ -11,20 +11,21 @@ const (
 	defaultSNI  = "v1.airlock.io"
 )
 
+type airlockAuthExtra struct {
+	Token string
+}
+
 // defaultClient returns a new client session connected to the default
 // public tunneling service hosted at airlock.io
-func defaultClient(authtoken string) (*client.Session, error) {
+func defaultClient(authtoken string) (*client.ReconnectingSession, error) {
 	trusted, err := tuntls.ClientTrusted(defaultSNI)
 	if err != nil {
 		return nil, err
 	}
 
-	sess, err := DialTLS("tcp", defaultAddr, trusted)
+	authExtra := airlockAuthExtra{Token: authtoken}
+	sess, err := DialTLSReconnecting("tcp", defaultAddr, trusted, authExtra)
 	if err != nil {
-		return nil, err
-	}
-
-	if err = sess.Auth(authtoken, nil); err != nil {
 		return nil, err
 	}
 

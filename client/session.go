@@ -32,7 +32,7 @@ type RawSession struct {
 }
 
 // Creates a new client tunnel session with the given id
-// running over the
+// running over the given muxado session.
 func NewRawSession(mux muxado.Session) *RawSession {
 	sess := &RawSession{
 		mux:    mux,
