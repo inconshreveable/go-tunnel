@@ -95,92 +95,6 @@ func (s *Session) Run() (err error) {
 	}
 }
 
-func (s *Session) handleStream(stream conn.Conn) {
-	defer s.recoverPanic("Session.handleStream")
-	defer stream.Close()
-
-	// make sure we only process streams while we're not shutting down
-	if err := s.guard.Enter(); err != nil {
-		stream.Error("Failing stream, session is shutting down")
-		return
-	}
-	defer s.guard.Exit()
-
-	raw, err := proto.ReadMsg(stream)
-	if err != nil {
-		stream.Error("Failed to read message: %v")
-		go s.Shutdown()
-		return
-	}
-
-	switch msg := raw.(type) {
-	case *proto.Bind:
-		err = s.handleBind(stream, msg)
-	case *proto.Unbind:
-		err = s.handleUnbind(stream, msg)
-	default:
-		err = fmt.Errorf("Unknown message type: %v", reflect.TypeOf(raw))
-	}
-
-	if err != nil {
-		stream.Error("Error on stream: %v", err)
-		go s.Shutdown()
-		return
-	}
-
-	return
-}
-
-func (s *Session) handleBind(stream conn.Conn, bind *proto.Bind) (err error) {
-	stream.Debug("Binding new tunnel: %v", bind)
-
-	respond := func(resp *proto.BindResp) {
-		if err = proto.WriteMsg(stream, resp); err != nil {
-			err = stream.Error("Failed to send bind response: %v", err)
-		}
-	}
-
-	if err = s.hooks.OnBind(s, bind); err != nil {
-		return
-	}
-
-	t, err := NewTunnel(bind, s, s.binders, s.tunnelHooks)
-	if err != nil {
-		respond(&proto.BindResp{Error: err.Error()})
-		return
-	}
-	t.Info("Registered new tunnel on session %s", s.id)
-
-	// add it to the list of tunnels
-	s.addTunnel(t)
-
-	// acknowledge success
-	respond(&proto.BindResp{Url: t.url})
-	return
-}
-
-func (s *Session) handleUnbind(stream conn.Conn, unbind *proto.Unbind) (err error) {
-	s.Debug("Unbinding tunnel")
-
-	// remote it from the list of tunnels
-	t, ok := s.delTunnel(unbind.Url)
-	if !ok {
-		return s.Error("Failed to unbind tunnel %s: no tunnel found.", unbind.Url)
-	}
-
-	if err = t.shutdown(); err != nil {
-		return s.Error("Failed to unbind tunnel %s: %v", unbind.Url, err)
-	}
-
-	// acknowledge success
-	unbindResp := &proto.UnbindResp{}
-	if err = proto.WriteMsg(stream, unbindResp); err != nil {
-		return s.Error("Failed to write unbind resp: %v", err)
-	}
-
-	return
-}
-
 func (s *Session) handleAuth() error {
 	// accept ann auth stream
 	raw, err := s.mux.Accept()
@@ -238,6 +152,92 @@ func (s *Session) handleAuth() error {
 	}
 
 	return nil
+}
+
+func (s *Session) handleStream(stream conn.Conn) {
+	defer s.recoverPanic("Session.handleStream")
+	defer stream.Close()
+
+	// make sure we only process streams while we're not shutting down
+	if err := s.guard.Enter(); err != nil {
+		stream.Error("Failing stream, session is shutting down")
+		return
+	}
+	defer s.guard.Exit()
+
+	raw, err := proto.ReadMsg(stream)
+	if err != nil {
+		stream.Error("Failed to read message: %v")
+		go s.Shutdown()
+		return
+	}
+
+	switch msg := raw.(type) {
+	case *proto.Bind:
+		err = s.handleBind(stream, msg)
+	case *proto.Unbind:
+		err = s.handleUnbind(stream, msg)
+	default:
+		err = fmt.Errorf("Unknown message type: %v", reflect.TypeOf(raw))
+	}
+
+	if err != nil {
+		stream.Error("Error on stream: %v", err)
+		go s.Shutdown()
+		return
+	}
+
+	return
+}
+
+func (s *Session) handleBind(stream conn.Conn, bind *proto.Bind) (err error) {
+	stream.Debug("Binding new tunnel: %v", bind)
+
+	respond := func(resp *proto.BindResp) {
+		if err = proto.WriteMsg(stream, resp); err != nil {
+			err = stream.Error("Failed to send bind response: %v", err)
+		}
+	}
+
+	if err = s.hooks.OnBind(s, bind); err != nil {
+		return
+	}
+
+	t, err := newTunnel(bind, s, s.binders, s.tunnelHooks)
+	if err != nil {
+		respond(&proto.BindResp{Error: err.Error()})
+		return
+	}
+	t.Info("Registered new tunnel on session %s", s.id)
+
+	// add it to the list of tunnels
+	s.addTunnel(t)
+
+	// acknowledge success
+	respond(&proto.BindResp{Url: t.url})
+	return
+}
+
+func (s *Session) handleUnbind(stream conn.Conn, unbind *proto.Unbind) (err error) {
+	s.Debug("Unbinding tunnel")
+
+	// remote it from the list of tunnels
+	t, ok := s.delTunnel(unbind.Url)
+	if !ok {
+		return s.Error("Failed to unbind tunnel %s: no tunnel found.", unbind.Url)
+	}
+
+	if err = t.shutdown(); err != nil {
+		return s.Error("Failed to unbind tunnel %s: %v", unbind.Url, err)
+	}
+
+	// acknowledge success
+	unbindResp := &proto.UnbindResp{}
+	if err = proto.WriteMsg(stream, unbindResp); err != nil {
+		return s.Error("Failed to write unbind resp: %v", err)
+	}
+
+	return
 }
 
 func (s *Session) Shutdown() {

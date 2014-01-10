@@ -47,7 +47,7 @@ type TunnelHooks interface {
 
 // Create a new tunnel from a registration message received
 // on a control channel
-func NewTunnel(b *proto.Bind, sess *Session, binders Binders, hooks TunnelHooks) (t *Tunnel, err error) {
+func newTunnel(b *proto.Bind, sess *Session, binders Binders, hooks TunnelHooks) (t *Tunnel, err error) {
 	t = &Tunnel{
 		req:    b,
 		start:  time.Now(),

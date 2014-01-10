@@ -12,7 +12,7 @@ type sessionRegistry struct {
 	registry map[string]*Session
 }
 
-func newSessionRegistry() *sessionRegistry {
+func NewSessionRegistry() *sessionRegistry {
 	return &sessionRegistry{
 		registry: make(map[string]*Session),
 	}
