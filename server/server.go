@@ -53,7 +53,7 @@ func NewServer(listener net.Listener, binders Binders) *Server {
 	return &Server{
 		Logger:       log.NewTaggedLogger("server", listener.Addr().String()),
 		listener:     muxado.NewListener(listener),
-		registry:     newSessionRegistry(),
+		registry:     NewSessionRegistry(),
 		Binders:      binders,
 		TunnelHooks:  new(NoopTunnelHooks),
 		SessionHooks: new(NoopSessionHooks),
