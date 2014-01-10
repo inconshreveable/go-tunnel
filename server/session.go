@@ -268,7 +268,7 @@ func (s *Session) Shutdown() {
 
 // Opens a new proxy stream to the client and writes a StartProxy message
 // with the given client address and tunnel url.
-func (s *Session) OpenProxy(clientAddr, tunnelUrl string) (pxy conn.Conn, err error) {
+func (s *Session) openProxy(clientAddr, tunnelUrl string) (pxy conn.Conn, err error) {
 	// open a new proxy stream
 	pxyStream, err := s.mux.Open()
 	if err != nil {

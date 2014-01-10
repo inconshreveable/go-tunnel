@@ -149,7 +149,7 @@ func (t *Tunnel) handlePublic(publicConn conn.Conn) {
 	startTime := time.Now()
 
 	// open a proxy stream
-	proxyConn, err := t.sess.OpenProxy(publicConn.RemoteAddr().String(), t.url)
+	proxyConn, err := t.sess.openProxy(publicConn.RemoteAddr().String(), t.url)
 	if err != nil {
 		t.Error("Failed to open proxy connection: %v", err)
 		return
