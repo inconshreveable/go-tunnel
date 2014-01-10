@@ -166,3 +166,8 @@ http tunnels only:
 
 You can inject custom behavior into the tunneling server by creating a custom set of *server.SessionHooks* and
 *server.TunnelHooks* and setting those properties on your Server object.
+
+## API Documentation
+
+API documentation is available on godoc:
+[https://godoc.org/github.com/inconshreveable/go-tunnel](https://godoc.org/github.com/inconshreveable/go-tunnel)
