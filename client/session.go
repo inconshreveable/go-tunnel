@@ -181,7 +181,8 @@ func (s *Session) Listen(protocol string, opts interface{}, extra interface{}) (
 		}
 	case *proto.TCPOptions:
 		if o.RemotePort == 0 {
-			portString := strings.Split(resp.Url, ":")[1]
+			parts := strings.Split(resp.Url, ":")
+            portString := parts[len(parts)-1]
 			port, err := strconv.ParseUint(portString, 10, 16)
 			if err != nil {
 				return nil, err
@@ -207,16 +208,15 @@ func (s *Session) Listen(protocol string, opts interface{}, extra interface{}) (
 	return t, nil
 }
 
-// ListenHTTP listens a new HTTP endpoint and returns a *Tunnel which accepts connections on the remote listen.
+// ListenHTTP listens on a new HTTP endpoint and returns a *Tunnel which accepts connections on the remote listener.
 func (s *Session) ListenHTTP(opts *proto.HTTPOptions, extra interface{}) (*Tunnel, error) {
 	return s.Listen("http", opts, extra)
 }
 
-// ListenHTTP listens a new HTTPS endpoint and returns a *Tunnel which accepts connections on the remote listen.
+// ListenHTTP listens on a new HTTPS endpoint and returns a *Tunnel which accepts connections on the remote listener.
 func (s *Session) ListenHTTPS(opts *proto.HTTPOptions, extra interface{}) (*Tunnel, error) {
 	return s.Listen("https", opts, extra)
 }
-
 
 // ListenHTTPAndHTTPS listens a new HTTP and HTTPS endpoint on the same hostname. It returns a two *Tunnel objects which accept connections on the remote HTTP and HTTPS listens, respectively.
 func (s *Session) ListenHTTPAndHTTPS(opts *proto.HTTPOptions, extra interface{}) (*Tunnel, *Tunnel, error) {
@@ -236,8 +236,14 @@ func (s *Session) ListenHTTPAndHTTPS(opts *proto.HTTPOptions, extra interface{})
 	return t1, t2, nil
 }
 
+// ListenTLS listens on a new TCP endpoint and returns a *Tunnel which accepts connections on the remote listener.
 func (s *Session) ListenTCP(opts *proto.TCPOptions, extra interface{}) (*Tunnel, error) {
 	return s.Listen("tcp", opts, extra)
+}
+
+// ListenTLS listens on a new TLS endpoint and returns a *Tunnel which accepts connections on the remote listener.
+func (s *Session) ListenTLS(opts *proto.TLSOptions, extra interface{}) (*Tunnel, error) {
+    return s.Listen("tls", opts, extra)
 }
 
 func (s *Session) receive() {
