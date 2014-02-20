@@ -18,7 +18,6 @@ func init() {
 	rng = mrand.New(mrand.NewSource(seed))
 }
 
-
 func randomSeed() (seed int64, err error) {
 	err = binary.Read(rand.Reader, binary.LittleEndian, &seed)
 	return

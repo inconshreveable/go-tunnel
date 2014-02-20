@@ -36,7 +36,7 @@ type Logger interface {
 
 type TaggedLogger struct {
 	*log.Logger
-	tags []string
+	tags   []string
 	prefix string
 }
 

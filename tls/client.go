@@ -2,10 +2,10 @@ package tls
 
 import (
 	"crypto/tls"
-	"io/ioutil"
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
+	"io/ioutil"
 )
 
 func ClientConfig(servername string, rootPaths []string) (*tls.Config, error) {

@@ -2,10 +2,9 @@ package binder
 
 import (
 	"crypto/tls"
-	"fmt"
 	"encoding/base64"
+	"fmt"
 	proto "github.com/inconshreveable/go-tunnel/proto"
-	util "github.com/inconshreveable/go-tunnel/util"
 	vhost "github.com/inconshreveable/go-vhost"
 	"net"
 	"strings"
@@ -26,9 +25,9 @@ type vhostMuxer interface {
 }
 
 type HTTPBinder struct {
-	mux            vhostMuxer       // muxer
-	publicBaseAddr string           // public host or host:port address used in creating the returned URLs when binding
-	proto          string           // http or https
+	mux            vhostMuxer // muxer
+	publicBaseAddr string     // public host or host:port address used in creating the returned URLs when binding
+	proto          string     // http or https
 }
 
 func (b *HTTPBinder) Bind(rawOpts interface{}) (net.Listener, string, error) {
@@ -41,9 +40,9 @@ func (b *HTTPBinder) Bind(rawOpts interface{}) (net.Listener, string, error) {
 }
 
 func (b *HTTPBinder) BindOpts(opts *proto.HTTPOptions) (listener net.Listener, url string, err error) {
-	for i:=0; i<maxRandomAttempts; i++ {
+	for i := 0; i < maxRandomAttempts; i++ {
 		// pick a name
-		hostname, isRandom := b.pickName(opts)
+		hostname, isRandom := pickName(opts.Hostname, opts.Subdomain, b.publicBaseAddr)
 
 		// bind it - this could fail if the requested hostname is already bound
 		if listener, err = b.mux.Listen(hostname); err != nil {
@@ -68,25 +67,6 @@ func (b *HTTPBinder) BindOpts(opts *proto.HTTPOptions) (listener net.Listener, u
 
 	err = fmt.Errorf("Failed to assign random hostname")
 	return
-}
-
-func (b *HTTPBinder) pickName(opts *proto.HTTPOptions) (url string, isRandom bool) {
-	// normalize names
-	hostname := normalize(opts.Hostname)
-	subdomain := normalize(opts.Subdomain)
-
-	// Register for specific hostname
-	if hostname != "" {
-		return hostname, false
-
-		// Register for specific subdomain
-	} else if subdomain != "" {
-		return fmt.Sprintf("%s.%s", subdomain, b.publicBaseAddr), false
-
-		// Register for random subdomain
-	} else {
-		return fmt.Sprintf("%s.%s", util.RandId(4), b.publicBaseAddr), true
-	}
 }
 
 const (
@@ -195,8 +175,8 @@ func (a *authListener) Accept() (net.Conn, error) {
 		// request with basic auth
 		auth := httpConn.Request.Header.Get("Authorization")
 		if auth != a.encodedAuth {
-//			c.Info("Authentication failed: %s", auth)
-fmt.Printf("AUTH: %v, ENCODEDAUTH: %v", auth, a.encodedAuth)
+			//			c.Info("Authentication failed: %s", auth)
+			fmt.Printf("AUTH: %v, ENCODEDAUTH: %v", auth, a.encodedAuth)
 			c.Write([]byte(`HTTP/1.0 401 Not Authorized
 WWW-Authenticate: Basic realm="go-tunnel"
 Content-Length: 22
@@ -214,8 +194,8 @@ Authorization required`))
 
 func newAuthListener(l net.Listener, auth string) *authListener {
 	// pre-encode the http basic auth for fast comparisons later
-	return &authListener {
-		Listener: l,
+	return &authListener{
+		Listener:    l,
 		encodedAuth: "Basic " + base64.StdEncoding.EncodeToString([]byte(auth)),
 	}
 }

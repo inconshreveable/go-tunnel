@@ -28,9 +28,9 @@ type Envelope struct {
 // When a client opens a new control channel to the server
 // it must start by sending an Auth message.
 type Auth struct {
-	Version   []string     // protocol versions supported, ordered by preference
-	ClientId  string       // empty for new sessions
-	Extra     interface{}  // clients may add whatever data the like to auth messages
+	Version  []string    // protocol versions supported, ordered by preference
+	ClientId string      // empty for new sessions
+	Extra    interface{} // clients may add whatever data the like to auth messages
 }
 
 // A server responds to an Auth message with an
@@ -44,18 +44,18 @@ type Auth struct {
 // that is used to associate and authenticate future
 // proxy connections via the same field in RegProxy messages.
 type AuthResp struct {
-	Version   string        // protocol version chosen
-	ClientId  string
-	Error     string
-	Extra     interface {}
+	Version  string // protocol version chosen
+	ClientId string
+	Error    string
+	Extra    interface{}
 }
 
 // A client sends this message to the server over a new stream
 // to request the server bind a remote port/hostname on the client's behalf.
 type Bind struct {
-	Protocol string        // the protocol to bind
-	Options  interface{}   // options for the bind - protocol dependent
-	Extra    interface{}   // anything extra the application wants to send
+	Protocol string      // the protocol to bind
+	Options  interface{} // options for the bind - protocol dependent
+	Extra    interface{} // anything extra the application wants to send
 }
 
 type HTTPOptions struct {
@@ -66,6 +66,11 @@ type HTTPOptions struct {
 
 type TCPOptions struct {
 	RemotePort uint16
+}
+
+type TLSOptions struct {
+	Hostname  string
+	Subdomain string
 }
 
 // The server responds with a BindResp message to notify the client
@@ -80,7 +85,7 @@ type BindResp struct {
 // A client sends this message to the server over a new stream
 // to request the server unbind a previously bound tunnel
 type Unbind struct {
-	Url string
+	Url   string
 	Extra interface{}
 }
 
@@ -90,7 +95,6 @@ type UnbindResp struct {
 	Error string
 	Extra interface{}
 }
-
 
 // This message is sent first over a new stream from the server to the client to
 // provide it with metadata about the connection it will tunnel over the stream.

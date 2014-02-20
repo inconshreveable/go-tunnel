@@ -2,11 +2,11 @@ package conn
 
 import (
 	"crypto/tls"
+	log "github.com/inconshreveable/go-tunnel/log"
+	util "github.com/inconshreveable/go-tunnel/util"
 	"io"
 	"net"
 	"sync"
-	log "github.com/inconshreveable/go-tunnel/log"
-	util "github.com/inconshreveable/go-tunnel/util"
 )
 
 var (
@@ -28,7 +28,7 @@ type Listener struct {
 	Conns chan *Logged
 }
 
-func wrapConn(conn net.Conn, tags... string) *Logged {
+func wrapConn(conn net.Conn, tags ...string) *Logged {
 	switch c := conn.(type) {
 	case *Logged:
 		return c
@@ -72,15 +72,15 @@ func Listen(addr, typ string, tlsCfg *tls.Config) (l *Listener, err error) {
 	return
 }
 
-func Wrap(conn net.Conn, tags... string) *Logged {
+func Wrap(conn net.Conn, tags ...string) *Logged {
 	return wrapConn(conn, tags...)
 }
 
-func (c *Logged) SetTags(tags... string) {
+func (c *Logged) SetTags(tags ...string) {
 	c.Logger = log.NewTaggedLogger(tags...)
 }
 
-func (c *Logged) AddTags(tags... string) {
+func (c *Logged) AddTags(tags ...string) {
 	c.Logger.AddTags(tags...)
 }
 

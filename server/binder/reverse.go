@@ -1,10 +1,10 @@
 package binder
 
 import (
-	"net"
-	"time"
 	"fmt"
 	"github.com/inconshreveable/go-vhost"
+	"net"
+	"time"
 )
 
 func NewReverseProxyBinder(addr, publicBaseAddr string, muxTimeout time.Duration) (httpBinder *HTTPBinder, httpsBinder *HTTPBinder, err error) {
@@ -19,13 +19,13 @@ func NewReverseProxyBinder(addr, publicBaseAddr string, muxTimeout time.Duration
 		return
 	}
 
-	httpMux := &httpReverseProxyMuxer{ VhostMuxer: mux, proto: "http" }
+	httpMux := &httpReverseProxyMuxer{VhostMuxer: mux, proto: "http"}
 	httpBinder, err = sharedInit(httpMux, "http", publicBaseAddr)
 	if err != nil {
 		return
 	}
 
-	httpsMux := &httpReverseProxyMuxer{ VhostMuxer: mux, proto: "https" }
+	httpsMux := &httpReverseProxyMuxer{VhostMuxer: mux, proto: "https"}
 	httpsBinder, err = sharedInit(httpsMux, "https", publicBaseAddr)
 	if err != nil {
 		return
@@ -33,7 +33,6 @@ func NewReverseProxyBinder(addr, publicBaseAddr string, muxTimeout time.Duration
 
 	return
 }
-
 
 // HTTPReverseProxyConn inspects the X-Forwarded-For header and
 // includes either http:// or https:// in the result of Host()
@@ -59,9 +58,9 @@ func (m *httpReverseProxyMuxer) Listen(hostname string) (net.Listener, error) {
 }
 
 func newReverseProxyMuxer(listener net.Listener, muxTimeout time.Duration) (*vhost.VhostMuxer, error) {
-	fn := func (c net.Conn) (vhost.Conn, error) {
+	fn := func(c net.Conn) (vhost.Conn, error) {
 		c, err := vhost.HTTP(c)
-		if err != nil  {
+		if err != nil {
 			return nil, err
 		}
 		return &HTTPReverseProxyConn{c.(*vhost.HTTPConn)}, nil
@@ -69,4 +68,3 @@ func newReverseProxyMuxer(listener net.Listener, muxTimeout time.Duration) (*vho
 
 	return vhost.NewVhostMuxer(listener, fn, muxTimeout)
 }
-

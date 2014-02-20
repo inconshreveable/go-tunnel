@@ -2,8 +2,8 @@ package proto
 
 import (
 	"encoding/binary"
-	"io"
 	"github.com/inconshreveable/go-tunnel/conn"
+	"io"
 )
 
 func readMsgShared(c conn.Conn) (buffer []byte, err error) {

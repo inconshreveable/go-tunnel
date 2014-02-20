@@ -1,9 +1,9 @@
 package tls
 
 import (
-    "fmt"
-    "reflect"
-    "unsafe"
+	"fmt"
+	"reflect"
+	"unsafe"
 )
 
 func bindata_read(data, name string) ([]byte, error) {
@@ -53,7 +53,6 @@ func assets_tls_snakeoil_crt() ([]byte, error) {
 	)
 }
 
-
 // Asset loads and returns the asset for the given name.
 // It returns an error if the asset could not be found or
 // could not be loaded.
@@ -65,10 +64,9 @@ func Asset(name string) ([]byte, error) {
 }
 
 // _bindata is a table, holding each asset generator, mapped to its name.
-var _bindata = map[string] func() ([]byte, error) {
-	"assets/tls/trusted.root.crt": assets_tls_trusted_root_crt,
+var _bindata = map[string]func() ([]byte, error){
+	"assets/tls/trusted.root.crt":  assets_tls_trusted_root_crt,
 	"assets/tls/snakeoil.root.crt": assets_tls_snakeoil_root_crt,
-	"assets/tls/snakeoil.key": assets_tls_snakeoil_key,
-	"assets/tls/snakeoil.crt": assets_tls_snakeoil_crt,
-
+	"assets/tls/snakeoil.key":      assets_tls_snakeoil_key,
+	"assets/tls/snakeoil.crt":      assets_tls_snakeoil_crt,
 }

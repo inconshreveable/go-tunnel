@@ -1,8 +1,10 @@
 package binder
 
 import (
-	"net"
 	"encoding/json"
+	"fmt"
+	"github.com/inconshreveable/go-tunnel/util"
+	"net"
 )
 
 // the most awful hack in the whole library
@@ -24,6 +26,25 @@ func unpackOptions(rawOpts, unpacked interface{}) error {
 	}
 
 	return nil
+}
+
+func pickName(hostname, subdomain, publicBaseAddr string) (url string, israndom bool) {
+	// normalize names
+	hostname = normalize(hostname)
+	subdomain = normalize(subdomain)
+
+	// register for specific hostname
+	if hostname != "" {
+		return hostname, false
+
+		// register for specific subdomain
+	} else if subdomain != "" {
+		return fmt.Sprintf("%s.%s", subdomain, publicBaseAddr), false
+
+		// register for random subdomain
+	} else {
+		return fmt.Sprintf("%s.%s", util.RandId(4), publicBaseAddr), true
+	}
 }
 
 type Binder interface {

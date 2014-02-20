@@ -182,7 +182,7 @@ func (s *Session) Listen(protocol string, opts interface{}, extra interface{}) (
 	case *proto.TCPOptions:
 		if o.RemotePort == 0 {
 			parts := strings.Split(resp.Url, ":")
-            portString := parts[len(parts)-1]
+			portString := parts[len(parts)-1]
 			port, err := strconv.ParseUint(portString, 10, 16)
 			if err != nil {
 				return nil, err
@@ -243,7 +243,7 @@ func (s *Session) ListenTCP(opts *proto.TCPOptions, extra interface{}) (*Tunnel,
 
 // ListenTLS listens on a new TLS endpoint and returns a *Tunnel which accepts connections on the remote listener.
 func (s *Session) ListenTLS(opts *proto.TLSOptions, extra interface{}) (*Tunnel, error) {
-    return s.Listen("tls", opts, extra)
+	return s.Listen("tls", opts, extra)
 }
 
 func (s *Session) receive() {
