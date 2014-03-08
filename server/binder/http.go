@@ -32,7 +32,7 @@ type HTTPBinder struct {
 
 func (b *HTTPBinder) Bind(rawOpts interface{}) (net.Listener, string, error) {
 	var opts proto.HTTPOptions
-	if err := unpackOptions(rawOpts, &opts); err != nil {
+	if err := proto.UnpackInterfaceField(rawOpts, &opts); err != nil {
 		return nil, "", err
 	}
 

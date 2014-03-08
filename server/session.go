@@ -11,6 +11,7 @@ import (
 	"runtime/debug"
 	"sort"
 	"sync"
+	"time"
 )
 
 type Session struct {
@@ -19,6 +20,9 @@ type Session struct {
 
 	// auth message
 	auth *proto.Auth
+
+	// session start time
+	start time.Time
 
 	// underlying mux session
 	mux muxado.Session
@@ -56,6 +60,7 @@ type SessionHooks interface {
 
 func NewSession(mux muxado.Session, registry *sessionRegistry, sessHooks SessionHooks, tunnelHooks TunnelHooks, binders Binders) *Session {
 	return &Session{
+		start:       time.Now(),
 		Logger:      log.NewTaggedLogger("session"),
 		mux:         mux,
 		tunnels:     make(map[string]*Tunnel, 0),
@@ -310,4 +315,16 @@ func (s *Session) recoverPanic(name string) {
 	if r := recover(); r != nil {
 		s.Error("%s failed with error %v: %s", name, r, debug.Stack())
 	}
+}
+
+func (s *Session) Auth() *proto.Auth {
+	return s.auth
+}
+
+func (s *Session) Id() string {
+	return s.id
+}
+
+func (s *Session) Start() time.Time {
+	return s.start
 }

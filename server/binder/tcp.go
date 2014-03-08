@@ -14,7 +14,7 @@ type TCPBinder struct {
 
 func (b *TCPBinder) Bind(rawOpts interface{}) (net.Listener, string, error) {
 	var opts proto.TCPOptions
-	if err := unpackOptions(rawOpts, &opts); err != nil {
+	if err := proto.UnpackInterfaceField(rawOpts, &opts); err != nil {
 		return nil, "", err
 	}
 

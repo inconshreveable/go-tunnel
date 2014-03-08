@@ -36,7 +36,7 @@ func NewTLSBinder(addr, publicBaseAddr string, muxTimeout time.Duration) (*TLSBi
 
 func (b *TLSBinder) Bind(rawOpts interface{}) (net.Listener, string, error) {
 	var opts proto.TLSOptions
-	if err := unpackOptions(rawOpts, &opts); err != nil {
+	if err := proto.UnpackInterfaceField(rawOpts, &opts); err != nil {
 		return nil, "", err
 	}
 
