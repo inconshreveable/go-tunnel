@@ -4,11 +4,12 @@ import (
 	"crypto/tls"
 	"encoding/base64"
 	"fmt"
-	proto "github.com/inconshreveable/go-tunnel/proto"
-	vhost "github.com/inconshreveable/go-vhost"
 	"net"
 	"strings"
 	"time"
+
+	proto "github.com/inconshreveable/go-tunnel/proto"
+	vhost "github.com/inconshreveable/go-vhost"
 )
 
 const (
@@ -153,6 +154,7 @@ func NewHTTPSBinder(addr, publicBaseAddr string, muxTimeout time.Duration, tlsCo
 	return sharedInit(mux, "https", publicBaseAddr)
 }
 
+// XXX: perhaps this shouldn't be part of a binder
 type authListener struct {
 	net.Listener
 	encodedAuth string
@@ -165,8 +167,14 @@ func (a *authListener) Accept() (net.Conn, error) {
 			return nil, err
 		}
 
-		httpConn, ok := c.(*vhost.HTTPConn)
-		if !ok {
+		var httpConn *vhost.HTTPConn
+		switch typedConn := c.(type) {
+		case *vhost.HTTPConn:
+			httpConn = typedConn
+		case *HTTPReverseProxyConn:
+			httpConn = typedConn.HTTPConn
+		default:
+			c.Close()
 			return nil, fmt.Errorf("Accepted conn %v is not *vhost.HTTPConn", c)
 		}
 
@@ -175,8 +183,6 @@ func (a *authListener) Accept() (net.Conn, error) {
 		// request with basic auth
 		auth := httpConn.Request.Header.Get("Authorization")
 		if auth != a.encodedAuth {
-			//			c.Info("Authentication failed: %s", auth)
-			fmt.Printf("AUTH: %v, ENCODEDAUTH: %v", auth, a.encodedAuth)
 			c.Write([]byte(`HTTP/1.0 401 Not Authorized
 WWW-Authenticate: Basic realm="go-tunnel"
 Content-Length: 22
