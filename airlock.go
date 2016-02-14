@@ -1,14 +1,14 @@
 package tunnel
 
 import (
-	client "github.com/inconshreveable/go-tunnel/client"
-	proto "github.com/inconshreveable/go-tunnel/proto"
-	tuntls "github.com/inconshreveable/go-tunnel/tls"
+	client "./client"
+	proto "./proto"
+	tuntls "./tls"
 )
 
 const (
-	defaultAddr = "v1.airlock.io:443"
-	defaultSNI  = "v1.airlock.io"
+	defaultAddr = "ngrok.io:443"
+	defaultSNI = "ngrok.io"
 )
 
 type airlockAuthExtra struct {

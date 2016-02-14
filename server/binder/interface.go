@@ -1,8 +1,8 @@
 package binder
 
 import (
+	"../util"
 	"fmt"
-	"github.com/inconshreveable/go-tunnel/util"
 	"net"
 )
 

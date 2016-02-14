@@ -1,10 +1,10 @@
 package server
 
 import (
+	conn "../conn"
+	log "../log"
+	proto "../proto"
 	"fmt"
-	conn "github.com/inconshreveable/go-tunnel/conn"
-	log "github.com/inconshreveable/go-tunnel/log"
-	proto "github.com/inconshreveable/go-tunnel/proto"
 	"net"
 	"runtime/debug"
 	"sync/atomic"

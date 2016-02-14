@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	proto "github.com/inconshreveable/go-tunnel/proto"
+	proto "../proto"
 	vhost "github.com/inconshreveable/go-vhost"
 )
 
