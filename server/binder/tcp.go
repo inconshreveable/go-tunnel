@@ -1,8 +1,8 @@
 package binder
 
 import (
+	"../proto"
 	"fmt"
-	"github.com/inconshreveable/go-tunnel/proto"
 	"net"
 	"strings"
 )

@@ -1,18 +1,18 @@
 package client
 
 import (
-	"bufio"
-	"code.google.com/p/go.net/proxy"
-	"crypto/tls"
-	"encoding/base64"
-	"fmt"
-	"github.com/inconshreveable/muxado"
-	"net"
-	"net/http"
-	"net/url"
+    "bufio"
+    "crypto/tls"
+    "encoding/base64"
+    "fmt"
+    "github.com/inconshreveable/muxado"
+    "golang.org/x/net/proxy"
+    "net"
+    "net/http"
+    "net/url"
 )
 
-func SOCKS5Dialer(network, proxyAddr, user, password, addr string, tlsConfig *tls.Config) func () (muxado.Session, error) {
+func SOCKS5Dialer(network, proxyAddr, user, password, addr string, tlsConfig *tls.Config) func() (muxado.Session, error) {
     return func() (muxado.Session, error) {
         proxyAuth := &proxy.Auth{User: user, Password: password}
 

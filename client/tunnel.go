@@ -1,10 +1,10 @@
 package client
 
 import (
+	conn "../conn"
+	proto "../proto"
 	"errors"
 	"fmt"
-	conn "github.com/inconshreveable/go-tunnel/conn"
-	proto "github.com/inconshreveable/go-tunnel/proto"
 	"net"
 	"sync/atomic"
 )

@@ -1,10 +1,10 @@
 package client
 
 import (
+	conn "../conn"
+	log "../log"
+	proto "../proto"
 	"errors"
-	conn "github.com/inconshreveable/go-tunnel/conn"
-	log "github.com/inconshreveable/go-tunnel/log"
-	proto "github.com/inconshreveable/go-tunnel/proto"
 	muxado "github.com/inconshreveable/muxado"
 	"net"
 	"strconv"

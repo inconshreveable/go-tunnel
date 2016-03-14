@@ -1,9 +1,9 @@
 package server
 
 import (
+	"../binder"
+	log "../log"
 	"crypto/tls"
-	log "github.com/inconshreveable/go-tunnel/log"
-	"github.com/inconshreveable/go-tunnel/server/binder"
 	muxado "github.com/inconshreveable/muxado"
 	"net"
 )

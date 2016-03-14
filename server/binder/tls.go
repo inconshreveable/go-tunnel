@@ -1,8 +1,8 @@
 package binder
 
 import (
+	proto "../proto"
 	"fmt"
-	proto "github.com/inconshreveable/go-tunnel/proto"
 	vhost "github.com/inconshreveable/go-vhost"
 	"net"
 	"time"
