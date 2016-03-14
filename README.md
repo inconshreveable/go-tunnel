@@ -1,4 +1,9 @@
-# go-tunnel
+# Project Status
+
+This library is no longer developed, maintained or supported. Pull requests will be accepted only to ensure
+it continues to compile, all other PRs and issues will be closed.
+
+## go-tunnel
 
 Listen for connections made to a remote machine.
 
@@ -51,7 +56,12 @@ assigned by the free service I provide on airlock.io:
 			io.WriteString(w, "Hello world!\n")
 		})
 
-		tun, err := tunnel.ListenHTTP()
+		sess, err := tunnel.Dial("example.com:1234")
+		if err != nil {
+			panic(err)
+		}
+
+        tun, err := sess.ListenHTTP()
 		if err != nil {
 			panic(err)
 		}

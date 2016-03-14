@@ -2,9 +2,10 @@ package tunnel
 
 import (
 	"crypto/tls"
+	"net"
+
 	client "github.com/inconshreveable/go-tunnel/client"
 	"github.com/inconshreveable/muxado"
-	"net"
 )
 
 // Client starts a new go-tunnel session on conn
